@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E&S - khám phá và chia sẻ</title>
+    <link rel="stylesheet" href="styles.css">
+    </head>
+<body>
+    <!-- thanh điều hướng -->
+    <div class="header">
+        <div class="logo">E&S</div>
+        
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Tìm kiếm hình ảnh..." id="searchInput">
+        </div>
+        
+        <div id="authSection" class="auth-section">
+            <div class="auth-buttons">
+                <button class="btn btn-login" onclick="openLoginModal()">Đăng Nhập</button>
+                <button class="btn btn-register" onclick="openRegisterModal()">Đăng Ký</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- hộp thoại đăng  nhập -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2>Đăng Nhập</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Mật khẩu:</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn-submit">Đăng Nhập</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- hộp thoại đăng kí -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('registerModal')">&times;</span>
+            <h2>Đăng Ký</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">Họ tên:</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email:</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Mật khẩu:</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <button type="submit" class="btn-submit">Đăng Ký</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- hộp thoại upload ảnh -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('uploadModal')">&times;</span>
+            <h2>Tải Lên Hình Ảnh</h2>
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label>Chọn hình ảnh:</label>
+                    <div class="file-upload" id="fileUpload">
+                        <div>📁 Kéo thả hoặc click để chọn ảnh</div>
+                        <input type="file" id="imageFile" accept="image/*" style="display: none;">
+                    </div>
+                    <img id="imagePreview" class="image-preview" style="display: none;">
+                </div>
+                <div class="form-group">
+                    <label for="pinTitle">Tiêu đề:</label>
+                    <input type="text" id="pinTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="pinDescription">Mô tả:</label>
+                    <textarea id="pinDescription"></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Đăng Tải</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- nội dung -->
+    <div class="main-content">
+        <div class="hero-section">
+            <h1>Khám Phá & Chia Sẻ Cảm Hứng</h1>
+            <p>Tìm kiếm hàng triệu ý tưởng cho dự án tiếp theo của bạn</p>
+        </div>
+
+        <div class="gallery-container">
+            <div id="masonryGrid" class="masonry-grid"></div>
+            <div id="loading" class="loading">Đang tải thêm hình ảnh...</div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    </body>
+</html>
