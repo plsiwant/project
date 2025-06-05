@@ -1,4 +1,4 @@
-  // biến toàn cục
+ // biến toàn cục
         let currentUser = null;
         let pins = [];
         let currentPage = 0;
@@ -61,6 +61,20 @@
         ];
 
         const authors = ['Minh Anh', 'Thu Hà', 'Đức Nam', 'Linh Chi', 'Hoàng Long', 'Mai Ly', 'Tuấn Kiệt', 'Phương Thảo'];
+
+        // Thêm mảng avatar mẫu cho author
+const authorAvatars = [
+    'https://randomuser.me/api/portraits/men/32.jpg',
+    'https://randomuser.me/api/portraits/women/44.jpg',
+    'https://randomuser.me/api/portraits/men/65.jpg',
+    'https://randomuser.me/api/portraits/women/68.jpg',
+    'https://randomuser.me/api/portraits/men/12.jpg',
+    'https://randomuser.me/api/portraits/women/21.jpg',
+    'https://randomuser.me/api/portraits/men/77.jpg',
+    'https://randomuser.me/api/portraits/women/85.jpg',
+    'https://randomuser.me/api/portraits/men/90.jpg',
+    'https://randomuser.me/api/portraits/women/95.jpg'
+];
 
         // xác minh trong các hộp thoại
         function openLoginModal() {
@@ -279,12 +293,14 @@
             const newPins = [];
             for (let i = 0; i < count; i++) {
                 const randomIndex = Math.floor(Math.random() * sampleImageUrls.length);
+                const randomAvatar = authorAvatars[Math.floor(Math.random() * authorAvatars.length)];
                 newPins.push({
                     id: Date.now() + i,
                     title: sampleTitles[randomIndex] || `Hình ảnh ${pins.length + i + 1}`,
                     description: sampleDescriptions[randomIndex] || 'Một hình ảnh đẹp',
                     image: sampleImageUrls[randomIndex],
                     author: authors[Math.floor(Math.random() * authors.length)],
+                    authorAvatar: randomAvatar,
                     date: new Date(2024, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toLocaleDateString('vi-VN'),
                     height: Math.floor(Math.random() * 200) + 200
                 });
@@ -311,74 +327,134 @@
         }
 
         // Render các pin lên giao diện
-        function renderPins(pinsToRender, prepend = false) {
-            const container = document.getElementById('masonryGrid');
-            
-            pinsToRender.forEach((pin, index) => {
-                const pinElement = document.createElement('div');
-                pinElement.className = 'pin-card';
-                pinElement.style.animationDelay = `${index * 0.1}s`;
-                
-                pinElement.innerHTML = `
-                    <img src="${pin.image}" alt="${pin.title}" class="pin-image" 
-                         style="height: ${pin.height}px;" loading="lazy">
-                    <div class="pin-content">
-                        <div class="pin-title">${pin.title}</div>
-                        <div class="pin-description">${pin.description}</div>
-                        <div class="pin-meta">
-                            <div class="pin-author">
-                                <div class="author-avatar">${pin.author.charAt(0).toUpperCase()}</div>
-                                <span>${pin.author}</span>
-                            </div>
-                            <span>${pin.date}</span>
-                        </div>
-                    </div>
-                `;
-                
-                pinElement.addEventListener('click', () => {
-                    showPinDetails(pin);
-                });
-                
-                if (prepend) {
-                    container.insertBefore(pinElement, container.firstChild);
-                } else {
-                    container.appendChild(pinElement);
-                }
-            });
-        }
+       function renderPins(pinsToRender, prepend = false) {
+    const container = document.getElementById('masonryGrid');
 
-        // Hiển thị chi tiết pin trong modal
-        function showPinDetails(pin) {
-            const modal = document.createElement('div');
-            modal.className = 'modal';
-            modal.style.display = 'block';
-            
-            modal.innerHTML = `
-                <div class="modal-content" style="max-width: 600px;">
-                    <span class="close" onclick="this.parentElement.parentElement.remove()">&times;</span>
-                    <img src="${pin.image}" alt="${pin.title}" style="width: 100%; border-radius: 8px; margin-bottom: 1rem;">
-                    <h2>${pin.title}</h2>
-                    <p style="color: #666; margin: 1rem 0;">${pin.description}</p>
-                    <div class="pin-meta" style="margin-top: 1rem;">
-                        <div class="pin-author">
-                            <div class="author-avatar">${pin.author.charAt(0).toUpperCase()}</div>
-                            <span><strong>${pin.author}</strong></span>
-                        </div>
-                        <span>${pin.date}</span>
-                    </div>
+    pinsToRender.forEach((pin, index) => {
+        const pinElement = document.createElement('div');
+        pinElement.className = 'pin-card';
+        pinElement.style.animationDelay = `${index * 0.1}s`;
+
+        pinElement.innerHTML = `
+    <img src="${pin.image}" alt="${pin.title}" class="pin-image" 
+         style="height: ${pin.height}px;" loading="lazy">
+    <div class="pin-content">
+        <div class="pin-title">${pin.title}</div>
+        <div class="pin-description">${pin.description}</div>
+        <div class="pin-meta">
+            <div class="pin-author">
+                <img src="${pin.authorAvatar || 'https://randomuser.me/api/portraits/lego/1.jpg'}" class="author-avatar" alt="avatar" style="object-fit:cover;" onerror="this.onerror=null;this.src='https://randomuser.me/api/portraits/lego/1.jpg'">
+                <span>${pin.author}</span>
+            </div>
+            <span>${pin.date}</span>
+        </div>
+        <div class="pin-actions"></div>
+    </div>
+`;
+
+
+        // Tạo nút Save
+        const saveBtn = document.createElement("button");
+        saveBtn.className = "save-btn";
+        saveBtn.innerText = pin.saved ? "Đã lưu" : "Lưu";
+        saveBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            pin.saved = !pin.saved;
+            saveBtn.innerText = pin.saved ? "Đã lưu" : "Lưu";
+        });
+
+        // Tạo nút Share
+        const shareBtn = document.createElement("button");
+        shareBtn.className = "share-btn";
+        shareBtn.innerText = "Chia sẻ";
+        shareBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (navigator.share) {
+                navigator.share({
+                    title: 'E&S',
+                    text: pin.description,
+                    url: window.location.href
+                }).catch(error => console.log("Lỗi chia sẻ: ", error));
+            } else {
+                alert("Trình duyệt không hỗ trợ chia sẻ!");
+            }
+        });
+
+        // Thêm nút vào `.pin-actions`
+        const actionsContainer = pinElement.querySelector(".pin-actions");
+        actionsContainer.appendChild(saveBtn);
+        actionsContainer.appendChild(shareBtn);
+
+        // Sự kiện click vào pin để xem chi tiết
+        pinElement.addEventListener('click', function(e) {
+            showPinDetails(pin);
+        });
+
+        if (prepend) {
+            container.insertBefore(pinElement, container.firstChild);
+        } else {
+            container.appendChild(pinElement);
+        }
+    });
+}
+
+// Hiển thị chi tiết pin trong modal
+function showPinDetails(pin) {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.display = 'block';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close" style="cursor:pointer;font-size:28px;float:right;" onclick="this.parentElement.parentElement.remove()">&times;</span>
+            <img src="${pin.image}" alt="${pin.title}" style="width: 100%; border-radius: 8px; margin-bottom: 1rem; object-fit:cover; max-height:350px;">
+            <h2>${pin.title}</h2>
+            <p style="color: #666; margin: 1rem 0;">${pin.description}</p>
+            <div class="pin-meta" style="margin-top: 1rem;">
+                <div class="pin-author">
+                    <img src="${pin.authorAvatar || 'https://randomuser.me/api/portraits/lego/1.jpg'}" class="author-avatar" alt="avatar" style="object-fit:cover;">
+                    <span><strong>${pin.author}</strong></span>
                 </div>
-            `;
-            
-            document.body.appendChild(modal);
-            
-            // Thêm sự kiện để đóng modal khi nhấp vào vùng ngoài modal
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.remove();
-                }
-            });
+                <span>${pin.date}</span>
+            </div>
+            <div class="pin-actions" style="margin-top:20px;display:flex;gap:10px;justify-content:flex-end;"></div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    // Thêm nút Save và Share vào modal
+    const actionsContainer = modal.querySelector('.pin-actions');
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'save-btn';
+    saveBtn.innerText = pin.saved ? 'Đã lưu' : 'Lưu';
+    saveBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        pin.saved = !pin.saved;
+        saveBtn.innerText = pin.saved ? 'Đã lưu' : 'Lưu';
+    });
+    const shareBtn = document.createElement('button');
+    shareBtn.className = 'share-btn';
+    shareBtn.innerText = 'Chia sẻ';
+    shareBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (navigator.share) {
+            navigator.share({
+                title: 'E&S',
+                text: pin.description,
+                url: window.location.href
+            }).catch(error => console.log('Lỗi chia sẻ: ', error));
+        } else {
+            alert('Trình duyệt không hỗ trợ chia sẻ!');
         }
-
+    });
+    actionsContainer.appendChild(saveBtn);
+    actionsContainer.appendChild(shareBtn);
+    // Đóng modal khi click ra ngoài
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+// ...existing code...
         // Xử lý tìm kiếm
         document.getElementById('searchInput').addEventListener('input', function(e) {
             searchTerm = e.target.value.toLowerCase();
@@ -416,7 +492,7 @@
         window.addEventListener('scroll', handleInfiniteScroll);
         window.addEventListener('load', () => {
             loadPins();
-            showNotification('Chào mừng bạn đến với PinShare! 📌', 'info');
+            showNotification('Chào mừng bạn đến với E&S! 📌', 'info');
         });
 
         // Xử lý lỗi hình ảnh
