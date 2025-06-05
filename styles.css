@@ -1,4 +1,4 @@
-* {
+  * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -430,6 +430,44 @@
             border-radius: 8px;
             object-fit: cover;
         }
+.pin-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.save-btn, .share-btn {
+    padding: 8px 15px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.save-btn {
+    background-color: #e60023;
+    color: white;
+    border-radius: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.share-btn {
+    background-color: #008CBA;
+    color: white;
+    border-radius: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.save-btn:hover {
+    background-color: #cc001f;
+}
+
+.share-btn:hover {
+    background-color: #0073a8;
+}
 
         /* css tạo dạng lưới và cột */
         @media (max-width: 1200px) {
